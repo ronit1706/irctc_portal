@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+
+    {% if user.is_authenticated %}
+        {% if user.is_staff %}
+            <h2>Admin Operations</h2>
+            <form method="post" action="{% url 'add_train' %}">
+                {% csrf_token %}
+                <label for="source">Source:</label>
+                <input type="text" id="source" name="source" required>
+                <br><br>
+                <label for="destination">Destination:</label>
+                <input type="text" id="destination" name="destination" required>
+                <br><br>
+                <button type="submit">Add Train</button>
+            </form>
+            <hr>
+        {% endif %}
+
+        <h2>Check Train Availability and Book Tickets</h2>
+        <form method="post" action="{% url 'get_seat_availability' %}">
+            {% csrf_token %}
+            <label for="source">Source:</label>
+            <input type="text" id="source" name="source" required>
+            <br><br>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required>
+            <br><br>
+            <button type="submit">Check Availability</button>
+        </form>
+        <hr>
+
+        <h2>Booking Details</h2>
+        <p>Booking details:</p>
+        <ul>
+            {% for booking in user.bookings.all %}
+                <li>{{ booking }}</li>
+            {% empty %}
+                <li>No bookings yet.</li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+</body>
+</html>

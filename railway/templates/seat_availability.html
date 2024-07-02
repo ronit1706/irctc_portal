@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Availability</title>
+</head>
+<body>
+    <h1>Seat Availability</h1>
+    {% if trains %}
+        <h2>Available Trains</h2>
+        <ul>
+            {% for train in trains %}
+                <li>
+                    Train ID: {{ train.id }}<br>
+                    Train Name: {{ train.name }}<br>
+                    Source: {{ train.source }}<br>
+                    Destination: {{ train.destination }}<br>
+                    Available Seats: {{ train.available_seats }}<br>
+                    {% if train.available_seats > 0 %}
+                        <form method="POST" action="{% url 'book_seat' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="train_id" value="{{ train.id }}">
+                            <button type="submit">Book Seat</button>
+                        </form>
+                    {% else %}
+                        No seats available
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No trains found for the given route.</p>
+    {% endif %}
+</body>
+</html>
